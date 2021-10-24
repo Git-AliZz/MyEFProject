@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyEFProject_DataAccess.Data;
 
 namespace MyEFProject_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211024102223_AddFKCategoryToBook")]
+    partial class AddFKCategoryToBook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,9 +56,6 @@ namespace MyEFProject_DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("BookDetail_Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("Category_Id")
                         .HasColumnType("int");
 
@@ -68,9 +67,6 @@ namespace MyEFProject_DataAccess.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("Publisher_Id")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(300)
@@ -78,50 +74,9 @@ namespace MyEFProject_DataAccess.Migrations
 
                     b.HasKey("Book_Id");
 
-                    b.HasIndex("BookDetail_Id")
-                        .IsUnique();
-
                     b.HasIndex("Category_Id");
 
-                    b.HasIndex("Publisher_Id");
-
                     b.ToTable("Books");
-                });
-
-            modelBuilder.Entity("MyEFProject_Model.Models.BookAuthor", b =>
-                {
-                    b.Property<int>("Book_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Author_Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("Book_Id", "Author_Id");
-
-                    b.HasIndex("Author_Id");
-
-                    b.ToTable("BookAuthors");
-                });
-
-            modelBuilder.Entity("MyEFProject_Model.Models.BookDetail", b =>
-                {
-                    b.Property<int>("BookDetail_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("NumberOfChapters")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfPages")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Weight")
-                        .HasColumnType("float");
-
-                    b.HasKey("BookDetail_Id");
-
-                    b.ToTable("BookDetails");
                 });
 
             modelBuilder.Entity("MyEFProject_Model.Models.Category", b =>
@@ -181,61 +136,16 @@ namespace MyEFProject_DataAccess.Migrations
 
             modelBuilder.Entity("MyEFProject_Model.Models.Book", b =>
                 {
-                    b.HasOne("MyEFProject_Model.Models.BookDetail", "BookDetail")
-                        .WithOne("Book")
-                        .HasForeignKey("MyEFProject_Model.Models.Book", "BookDetail_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("MyEFProject_Model.Models.Category", "Category")
                         .WithMany("Books")
                         .HasForeignKey("Category_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyEFProject_Model.Models.Publisher", "Publisher")
-                        .WithMany("Books")
-                        .HasForeignKey("Publisher_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BookDetail");
-
                     b.Navigation("Category");
-
-                    b.Navigation("Publisher");
-                });
-
-            modelBuilder.Entity("MyEFProject_Model.Models.BookAuthor", b =>
-                {
-                    b.HasOne("MyEFProject_Model.Models.Author", "Author")
-                        .WithMany()
-                        .HasForeignKey("Author_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MyEFProject_Model.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("Book_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("MyEFProject_Model.Models.BookDetail", b =>
-                {
-                    b.Navigation("Book");
                 });
 
             modelBuilder.Entity("MyEFProject_Model.Models.Category", b =>
-                {
-                    b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("MyEFProject_Model.Models.Publisher", b =>
                 {
                     b.Navigation("Books");
                 });
