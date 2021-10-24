@@ -22,10 +22,19 @@ namespace MyEFProject_DataAccess.Data
         public DbSet<BookDetail> BookDetails { get; set; }
         public DbSet<BookAuthor> BookAuthors{ get; set; }
 
+        public DbSet<Fluent_BookDetail> FluentBookDetails { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BookAuthor>()
                 .HasKey(b => new { b.Book_Id, b.Author_Id });
+
+            #region FluentBookDetail
+
+            modelBuilder.Entity<Fluent_BookDetail>().HasKey(b => b.BookDetail_Id);
+            modelBuilder.Entity<Fluent_BookDetail>().Property(b => b.NumberOfChapters).IsRequired();
+
+            #endregion
         }
     }
 }
