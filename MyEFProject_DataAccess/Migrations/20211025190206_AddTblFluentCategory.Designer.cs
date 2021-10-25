@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyEFProject_DataAccess.Data;
 
 namespace MyEFProject_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211025190206_AddTblFluentCategory")]
+    partial class AddTblFluentCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,11 +197,6 @@ namespace MyEFProject_DataAccess.Migrations
 
                     b.HasKey("Book_Id");
 
-                    b.HasIndex("BookDetail_Id")
-                        .IsUnique();
-
-                    b.HasIndex("Publisher_Id");
-
                     b.ToTable("FluentBooks");
                 });
 
@@ -346,25 +343,6 @@ namespace MyEFProject_DataAccess.Migrations
                     b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("MyEFProject_Model.Models.Fluent_Book", b =>
-                {
-                    b.HasOne("MyEFProject_Model.Models.Fluent_BookDetail", "Fluent_BookDetail")
-                        .WithOne("Fluent_Book")
-                        .HasForeignKey("MyEFProject_Model.Models.Fluent_Book", "BookDetail_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MyEFProject_Model.Models.Fluent_Publisher", "Fluent_Publisher")
-                        .WithMany("Fluent_Books")
-                        .HasForeignKey("Publisher_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Fluent_BookDetail");
-
-                    b.Navigation("Fluent_Publisher");
-                });
-
             modelBuilder.Entity("MyEFProject_Model.Models.BookDetail", b =>
                 {
                     b.Navigation("Book");
@@ -373,16 +351,6 @@ namespace MyEFProject_DataAccess.Migrations
             modelBuilder.Entity("MyEFProject_Model.Models.Category", b =>
                 {
                     b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("MyEFProject_Model.Models.Fluent_BookDetail", b =>
-                {
-                    b.Navigation("Fluent_Book");
-                });
-
-            modelBuilder.Entity("MyEFProject_Model.Models.Fluent_Publisher", b =>
-                {
-                    b.Navigation("Fluent_Books");
                 });
 
             modelBuilder.Entity("MyEFProject_Model.Models.Publisher", b =>
