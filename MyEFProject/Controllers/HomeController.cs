@@ -6,32 +6,68 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using MyEFProject_Model.Models;
+using MyEFProject_DataAccess.Data;
 
 namespace MyEFProject.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private ApplicationDbContext _context;
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            List<Category> list = _context.Categories.ToList();
+
+            return View(list);
         }
 
-        public IActionResult Privacy()
+        public IActionResult Upsert(int? id)
         {
-            return View();
+            Category category = new Category();
+
+            if (id == null)
+            {
+                return View(category);
+            }
+
+            category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            if (category==null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpPost]
+        public IActionResult Upsert(Category category)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (category.Id == 0)
+            {
+                _context.Categories.Add(category);
+            }
+            else
+            {
+                _context.Categories.Update(category);
+            }
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var category = _context.Categories.First(c => c.Id == id);
+            _context.Categories.Remove(category);
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
         }
     }
 }
