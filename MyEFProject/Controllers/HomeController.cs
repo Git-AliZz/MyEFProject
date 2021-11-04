@@ -35,7 +35,7 @@ namespace MyEFProject.Controllers
             }
 
             category = _context.Categories.FirstOrDefault(c => c.Id == id);
-            if (category==null)
+            if (category == null)
             {
                 return NotFound();
             }
@@ -65,6 +65,45 @@ namespace MyEFProject.Controllers
             var category = _context.Categories.First(c => c.Id == id);
             _context.Categories.Remove(category);
 
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult AddMultipleRecords()
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                _context.Categories.Add(new Category()
+                {
+                    Name = "Category " + i
+                });
+            }
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult AddMultipleRecordsWithRange()
+        {
+            List<Category> list = new List<Category>();
+
+            for (int i = 20; i < 30; i++)
+            {
+                list.Add(new Category() { Name = $"Cat {i}" });
+            }
+
+            _context.Categories.AddRange(list);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult RemoveMultipleRecords()
+        {
+            List<Category> list = _context.Categories.OrderByDescending(c => c.Id).Take(5).ToList();
+
+            _context.Categories.RemoveRange(list);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
